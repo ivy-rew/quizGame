@@ -1,13 +1,19 @@
 // main.js - Quiz Game Logic
+
 let currentQuestion = 0;
 let score = 0;
 let answered = false;
+let countdownActive = false;
+let countdownInterval = null;
+let countdownTimeout = null;
+let countdownSeconds = 10;
 
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
 
 function showQuestion() {
   answered = false;
+  countdownActive = false;
   scoreDiv.textContent = '';
   const q = quizQuestions[currentQuestion];
   quizDiv.innerHTML = `
@@ -23,21 +29,82 @@ function showQuestion() {
         </div>
       `).join('')}
     </div>
+    <div id="countdownBar" style="margin:16px 0; font-size:1.2em;"></div>
     <button class="next-btn" id="nextBtn" disabled>Nächste Frage</button>
+    <button class="countdown-btn" id="countdownBtn">Countdown starten (Leertaste)</button>
   `;
   document.querySelectorAll('.answer-btn').forEach(btn => {
     btn.onclick = answerHandler;
   });
   document.getElementById('nextBtn').onclick = nextHandler;
+  document.getElementById('countdownBtn').onclick = startCountdownMode;
+  document.addEventListener('keydown', spaceCountdownListener);
+}
+
+function spaceCountdownListener(e) {
+  if (e.code === 'Space' && !countdownActive && !answered) {
+    startCountdownMode();
+  }
+}
+
+function startCountdownMode() {
+  if (countdownActive || answered) return;
+  countdownActive = true;
+  let seconds = countdownSeconds;
+  const countdownBar = document.getElementById('countdownBar');
+  countdownBar.textContent = `Countdown: ${seconds} Sekunden`;
+  let btns = Array.from(document.querySelectorAll('.answer-btn'));
+  let highlightIdx = -1;
+  countdownInterval = setInterval(() => {
+    // Randomly highlight one card, never the same twice in a row
+    btns.forEach((btn, i) => btn.classList.remove('hovering'));
+    let nextIdx;
+    do {
+      nextIdx = Math.floor(Math.random() * btns.length);
+    } while (nextIdx === highlightIdx);
+    highlightIdx = nextIdx;
+    btns[highlightIdx].classList.add('hovering');
+    seconds--;
+    countdownBar.textContent = `Countdown: ${seconds} Sekunden`;
+    if (seconds <= 0) {
+      clearInterval(countdownInterval);
+      countdownBar.textContent = '';
+    }
+  }, 1000);
+  countdownTimeout = setTimeout(() => {
+    clearInterval(countdownInterval);
+    btns.forEach(btn => btn.classList.remove('hovering'));
+    showSolution();
+    countdownBar.textContent = '';
+    document.removeEventListener('keydown', spaceCountdownListener);
+  }, countdownSeconds * 1000);
+}
+
+function showSolution() {
+  answered = true;
+  let btns = Array.from(document.querySelectorAll('.answer-btn'));
+  const q = quizQuestions[currentQuestion];
+  btns.forEach((btn, i) => {
+    btn.disabled = true;
+    btn.classList.remove('hovering');
+    if (i === q.correct) {
+      btn.classList.add('correct', 'emphasize');
+    } else {
+      btn.classList.add('incorrect', 'dimmed');
+    }
+  });
+  scoreDiv.textContent = 'Zeit abgelaufen!';
+  document.getElementById('nextBtn').disabled = false;
 }
 
 function answerHandler(e) {
-  if (answered) return;
+  if (answered || countdownActive) return;
   answered = true;
+  document.removeEventListener('keydown', spaceCountdownListener);
   const idx = parseInt(e.target.getAttribute('data-idx'));
   const q = quizQuestions[currentQuestion];
   document.querySelectorAll('.answer-btn').forEach((btn, i) => {
-    btn.classList.remove('correct', 'incorrect');
+    btn.classList.remove('correct', 'incorrect', 'emphasize', 'dimmed');
     if (i === q.correct) btn.classList.add('correct');
     else btn.classList.add('incorrect');
     btn.disabled = true;
@@ -53,6 +120,9 @@ function answerHandler(e) {
 
 function nextHandler() {
   currentQuestion++;
+  if (countdownInterval) clearInterval(countdownInterval);
+  if (countdownTimeout) clearTimeout(countdownTimeout);
+  document.removeEventListener('keydown', spaceCountdownListener);
   if (currentQuestion < quizQuestions.length) {
     showQuestion();
   } else {
