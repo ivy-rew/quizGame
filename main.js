@@ -32,17 +32,30 @@ function showQuestion() {
       `).join('')}
     </div>
     <div id="countdownBar" style="margin:16px 0; font-size:1.2em;"></div>
-    <button class="next-btn" id="nextBtn" disabled>Nächste Frage</button>
-    <button class="countdown-btn" id="countdownBtn">Countdown starten (Leertaste)</button>
+    <div class="footer-hints">
+      <span class="key-hint key-action" data-key="ArrowLeft"><kbd>←</kbd></span>
+      <span class="key-hint key-action" data-key="ArrowRight"><kbd>→</kbd></span>
+      <span class="key-hint key-action" data-key="ArrowUp"><kbd>↑</kbd></span>
+      <span class="key-hint key-action" data-key="ArrowDown"><kbd>↓</kbd></span>
+      <span class="key-hint key-action" data-key="Space"><kbd>Leertaste</kbd></span>
+    </div>
   `;
   document.querySelectorAll('.answer-btn').forEach(btn => {
     btn.onclick = answerHandler;
   });
-  document.getElementById('nextBtn').onclick = nextHandler;
-  document.getElementById('countdownBtn').onclick = startCountdownMode;
-  document.addEventListener('keydown', spaceCountdownListener);
-  document.addEventListener('keydown', categoryJumpListener);
-  document.addEventListener('keydown', questionJumpListener);
+  document.querySelectorAll('.key-action').forEach(el => {
+    el.onclick = function() {
+      simulateKeyPress(el.getAttribute('data-key'));
+    };
+  });
+}
+
+function simulateKeyPress(key) {
+  const e = new KeyboardEvent('keydown', { code: key });
+  // Call all listeners manually
+  spaceCountdownListener(e);
+  categoryJumpListener(e);
+  questionJumpListener(e);
 }
 
 function spaceCountdownListener(e) {
@@ -215,5 +228,55 @@ function questionJumpListener(e) {
     showQuestion();
   }
 }
+
+function handleKeyAction(key) {
+  // Map key to action
+  switch (key) {
+    case 'ArrowLeft':
+      selectPrevCategory();
+      break;
+    case 'ArrowRight':
+      selectNextCategory();
+      break;
+    case 'ArrowUp':
+      selectPrevQuestion();
+      break;
+    case 'ArrowDown':
+      selectNextQuestion();
+      break;
+    case 'Enter':
+      revealAnswer();
+      break;
+    case ' ': // Spacebar
+      startCountdown();
+      break;
+    default:
+      break;
+  }
+}
+
+// Listen for keyboard events
+window.addEventListener('keydown', function(e) {
+  if (["INPUT", "TEXTAREA"].includes(document.activeElement.tagName)) return;
+  // Use e.code for all key comparisons
+  switch (e.code) {
+    case "Space":
+      e.preventDefault();
+      spaceCountdownListener(e);
+      break;
+    case "ArrowLeft":
+    case "ArrowRight":
+      e.preventDefault();
+      questionJumpListener(e);
+      break;
+    case "ArrowUp":
+    case "ArrowDown":
+      e.preventDefault();
+      categoryJumpListener(e);
+      break;
+    default:
+      break;
+  }
+});
 
 showQuestion();
