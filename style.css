@@ -17,11 +17,26 @@ body {
 h2 {
   margin-top: 0;
   color: #e0e0e0;
+  text-align: center;
 }
 .question {
+  text-align: center;
   font-size: 1.2em;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: #e0e0e0;
+}
+.category {
+  text-align: center;
+  margin-bottom: 8px;
+}
+#countdownBar {
+  text-align: center;
+  font-size: 1.2em;
+}
+#correctAnswerBar {
+  text-align: center;
+  font-weight: bold;
+  margin-top: 8px;
 }
 .answers.cards {
   display: flex;
@@ -133,9 +148,13 @@ h2 {
   cursor: not-allowed;
 }
 .score {
-  font-size: 1.2em;
+  text-align: center;
+  font-size: 1.1em;
   margin-top: 32px;
   color: #e0e0e0;
+}
+footer, h1, h2, h3 {
+  text-align: center;
 }
 .footer-hints {
   display: flex;
