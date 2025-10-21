@@ -7,6 +7,8 @@ let countdownActive = false;
 let countdownInterval = null;
 let countdownTimeout = null;
 let countdownSeconds = 10;
+let countdownPaused = false;
+let pausedSeconds = 0;
 
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
@@ -42,8 +44,12 @@ function showQuestion() {
 }
 
 function spaceCountdownListener(e) {
-  if (e.code === 'Space' && !countdownActive && !answered) {
-    startCountdownMode();
+  if (e.code === 'Space') {
+    if (countdownActive && !answered) {
+      toggleCountdownPause();
+    } else if (!countdownActive && !answered) {
+      startCountdownMode();
+    }
   }
 }
 
@@ -78,6 +84,47 @@ function startCountdownMode() {
     countdownBar.textContent = '';
     document.removeEventListener('keydown', spaceCountdownListener);
   }, countdownSeconds * 1000);
+}
+
+function toggleCountdownPause() {
+  const countdownBar = document.getElementById('countdownBar');
+  if (!countdownPaused) {
+    countdownPaused = true;
+    clearInterval(countdownInterval);
+    clearTimeout(countdownTimeout);
+    countdownBar.textContent += ' (Pause)';
+  } else {
+    countdownPaused = false;
+    resumeCountdown();
+  }
+}
+
+function resumeCountdown() {
+  let btns = Array.from(document.querySelectorAll('.answer-btn'));
+  let seconds = parseInt(document.getElementById('countdownBar').textContent.match(/\d+/));
+  let highlightIdx = btns.findIndex(btn => btn.classList.contains('hovering'));
+  countdownInterval = setInterval(() => {
+    btns.forEach((btn, i) => btn.classList.remove('hovering'));
+    let nextIdx;
+    do {
+      nextIdx = Math.floor(Math.random() * btns.length);
+    } while (nextIdx === highlightIdx);
+    highlightIdx = nextIdx;
+    btns[highlightIdx].classList.add('hovering');
+    seconds--;
+    document.getElementById('countdownBar').textContent = `Countdown: ${seconds} Sekunden`;
+    if (seconds <= 0) {
+      clearInterval(countdownInterval);
+      document.getElementById('countdownBar').textContent = '';
+    }
+  }, 1000);
+  countdownTimeout = setTimeout(() => {
+    clearInterval(countdownInterval);
+    btns.forEach(btn => btn.classList.remove('hovering'));
+    showSolution();
+    document.getElementById('countdownBar').textContent = '';
+    document.removeEventListener('keydown', spaceCountdownListener);
+  }, seconds * 1000);
 }
 
 function showSolution() {
