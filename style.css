@@ -36,41 +36,71 @@ h2 {
 }
 .answer-btn {
   width: 100%;
-  height: 120px;
+  height: 140px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 0;
-  border: 2px solid #444;
-  border-radius: 12px;
+  border: 4px dashed #fff;
+  border-radius: 24px;
   background: #23262f;
-  color: #e0e0e0;
+  color: #fff;
   cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  position: relative;
+  font-family: 'Comic Sans MS', 'Comic Sans', cursive, Arial, sans-serif;
+}
+.answer-card:nth-child(1) .answer-btn {
+  background: linear-gradient(135deg, #2196f3 60%, #90caf9 100%);
+  border-color: #1976d2;
+  box-shadow: 0 4px 24px rgba(33,150,243,0.25);
+  color: #fff;
+}
+.answer-card:nth-child(2) .answer-btn {
+  background: linear-gradient(135deg, #43ea7f 60%, #b6e7b0 100%);
+  border-color: #388e3c;
+  box-shadow: 0 4px 24px rgba(67,234,127,0.18);
+  color: #fff;
+}
+.answer-card:nth-child(3) .answer-btn {
+  background: linear-gradient(135deg, #ff6f00 60%, #ffb74d 100%);
+  border-color: #ff6f00;
+  box-shadow: 0 4px 24px rgba(255,111,0,0.18);
+  color: #fff;
 }
 .answer-btn:hover {
-  background: #2d3140;
-  border-color: #2196f3;
+  filter: brightness(1.08) drop-shadow(0 0 8px #fff);
+  border-style: solid;
 }
 .answer-btn.correct {
-  background: #2e4d2e;
+  background: linear-gradient(135deg, #4caf50 60%, #b6e7b0 100%);
   border-color: #4caf50;
 }
 .answer-btn.incorrect {
-  background: #4d2e2e;
+  background: linear-gradient(135deg, #f44336 60%, #f7b6b6 100%);
   border-color: #f44336;
 }
 .answer-number {
-  font-size: 2.5em;
+  font-size: 2.8em;
   font-weight: bold;
-  color: #90caf9;
+  color: #fff;
   margin-bottom: 8px;
+  text-shadow: 2px 2px 8px #000a;
+}
+.answer-card:nth-child(3) .answer-number {
+  color: #fff;
+  text-shadow: 2px 2px 8px #000a;
 }
 .answer-text {
-  font-size: 1em;
-  color: #e0e0e0;
+  font-size: 1.1em;
+  color: #fff;
+  text-shadow: 1px 1px 4px #000a;
+}
+.answer-card:nth-child(3) .answer-text {
+  color: #fff;
+  text-shadow: 1px 1px 4px #ff6f00a;
 }
 .next-btn {
   margin-top: 24px;
