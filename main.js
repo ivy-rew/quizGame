@@ -73,11 +73,10 @@ function startCountdownMode() {
   countdownActive = true;
   let seconds = countdownSeconds;
   const countdownBar = document.getElementById('countdownBar');
-  countdownBar.textContent = `Countdown: ${seconds} Sekunden`;
+  countdownBar.textContent = `${seconds}`;
   let btns = Array.from(document.querySelectorAll('.answer-btn'));
   let highlightIdx = -1;
   countdownInterval = setInterval(() => {
-    // Randomly highlight one card, never the same twice in a row
     btns.forEach((btn, i) => btn.classList.remove('hovering'));
     let nextIdx;
     do {
@@ -86,7 +85,7 @@ function startCountdownMode() {
     highlightIdx = nextIdx;
     btns[highlightIdx].classList.add('hovering');
     seconds--;
-    countdownBar.textContent = `Countdown: ${seconds} Sekunden`;
+    countdownBar.textContent = `${seconds}`;
     if (seconds <= 0) {
       clearInterval(countdownInterval);
       countdownBar.textContent = '';
@@ -110,6 +109,8 @@ function toggleCountdownPause() {
     countdownBar.textContent += ' (Pause)';
   } else {
     countdownPaused = false;
+    // Remove any label after pause
+    countdownBar.textContent = countdownBar.textContent.replace(/\s*\(Pause\)/, '');
     resumeCountdown();
   }
 }
@@ -127,7 +128,7 @@ function resumeCountdown() {
     highlightIdx = nextIdx;
     btns[highlightIdx].classList.add('hovering');
     seconds--;
-    document.getElementById('countdownBar').textContent = `Countdown: ${seconds} Sekunden`;
+    document.getElementById('countdownBar').textContent = `${seconds}`;
     if (seconds <= 0) {
       clearInterval(countdownInterval);
       document.getElementById('countdownBar').textContent = '';
@@ -155,7 +156,22 @@ function showSolution() {
       btn.classList.add('incorrect', 'dimmed');
     }
   });
-  scoreDiv.textContent = 'Zeit abgelaufen!';
+  // Show correct answer just below countdown, hide countdown
+  const countdownBar = document.getElementById('countdownBar');
+  countdownBar.textContent = '';
+  // Insert correct answer below countdownBar
+  if (!document.getElementById('correctAnswerBar')) {
+    const answerDiv = document.createElement('div');
+    answerDiv.id = 'correctAnswerBar';
+    answerDiv.style.marginTop = '8px';
+    answerDiv.style.fontWeight = 'bold';
+    answerDiv.textContent = `✅️ ${q.answers[q.correct]}`;
+    countdownBar.parentNode.insertBefore(answerDiv, countdownBar.nextSibling);
+  } else {
+    document.getElementById('correctAnswerBar').textContent = `✅️ ${q.answers[q.correct]}`;
+  }
+  // Enable only Enter and Arrow navigation after answer is shown
+  window.allowArrowNav = true;
   document.getElementById('nextBtn').disabled = false;
 }
 
@@ -199,33 +215,39 @@ function showScore() {
 
 // Remove previous PageUp/PageDown logic and use ArrowUp/ArrowDown for category jump
 function categoryJumpListener(e) {
-  if (answered || countdownActive) return;
-  if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-    const currentCat = quizQuestions[currentQuestion].category;
-    const allCats = quizQuestions.map(q => q.category);
-    const uniqueCats = [...new Set(allCats)];
-    let catIdx = uniqueCats.indexOf(currentCat);
-    let targetCatIdx = e.code === 'ArrowDown' ? catIdx + 1 : catIdx - 1;
-    if (targetCatIdx < 0) targetCatIdx = uniqueCats.length - 1;
-    if (targetCatIdx >= uniqueCats.length) targetCatIdx = 0;
-    const targetCat = uniqueCats[targetCatIdx];
-    // Find first question in target category
-    const targetQIdx = quizQuestions.findIndex(q => q.category === targetCat);
-    if (targetQIdx !== -1) {
-      currentQuestion = targetQIdx;
-      showQuestion();
+  // Allow navigation after answer is shown
+  if ((!answered && !countdownActive) || window.allowArrowNav) {
+    if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+      const currentCat = quizQuestions[currentQuestion].category;
+      const allCats = quizQuestions.map(q => q.category);
+      const uniqueCats = [...new Set(allCats)];
+      let catIdx = uniqueCats.indexOf(currentCat);
+      let targetCatIdx = e.code === 'ArrowDown' ? catIdx + 1 : catIdx - 1;
+      if (targetCatIdx < 0) targetCatIdx = uniqueCats.length - 1;
+      if (targetCatIdx >= uniqueCats.length) targetCatIdx = 0;
+      const targetCat = uniqueCats[targetCatIdx];
+      // Find first question in target category
+      const targetQIdx = quizQuestions.findIndex(q => q.category === targetCat);
+      if (targetQIdx !== -1) {
+        currentQuestion = targetQIdx;
+        window.allowArrowNav = false;
+        showQuestion();
+      }
     }
   }
 }
 
 function questionJumpListener(e) {
-  if (answered || countdownActive) return;
-  if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
-    let targetIdx = currentQuestion + (e.code === 'ArrowRight' ? 1 : -1);
-    if (targetIdx < 0) targetIdx = quizQuestions.length - 1;
-    if (targetIdx >= quizQuestions.length) targetIdx = 0;
-    currentQuestion = targetIdx;
-    showQuestion();
+  // Allow navigation after answer is shown
+  if ((!answered && !countdownActive) || window.allowArrowNav) {
+    if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
+      let targetIdx = currentQuestion + (e.code === 'ArrowRight' ? 1 : -1);
+      if (targetIdx < 0) targetIdx = quizQuestions.length - 1;
+      if (targetIdx >= quizQuestions.length) targetIdx = 0;
+      currentQuestion = targetIdx;
+      window.allowArrowNav = false;
+      showQuestion();
+    }
   }
 }
 
