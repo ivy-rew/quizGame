@@ -42,6 +42,7 @@ function showQuestion() {
   document.getElementById('countdownBtn').onclick = startCountdownMode;
   document.addEventListener('keydown', spaceCountdownListener);
   document.addEventListener('keydown', categoryJumpListener);
+  document.addEventListener('keydown', questionJumpListener);
 }
 
 function spaceCountdownListener(e) {
@@ -201,6 +202,17 @@ function categoryJumpListener(e) {
       currentQuestion = targetQIdx;
       showQuestion();
     }
+  }
+}
+
+function questionJumpListener(e) {
+  if (answered || countdownActive) return;
+  if (e.code === 'ArrowRight' || e.code === 'ArrowLeft') {
+    let targetIdx = currentQuestion + (e.code === 'ArrowRight' ? 1 : -1);
+    if (targetIdx < 0) targetIdx = quizQuestions.length - 1;
+    if (targetIdx >= quizQuestions.length) targetIdx = 0;
+    currentQuestion = targetIdx;
+    showQuestion();
   }
 }
 
