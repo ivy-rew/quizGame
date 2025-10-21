@@ -41,6 +41,7 @@ function showQuestion() {
   document.getElementById('nextBtn').onclick = nextHandler;
   document.getElementById('countdownBtn').onclick = startCountdownMode;
   document.addEventListener('keydown', spaceCountdownListener);
+  document.addEventListener('keydown', categoryJumpListener);
 }
 
 function spaceCountdownListener(e) {
@@ -180,6 +181,27 @@ function nextHandler() {
 function showScore() {
   quizDiv.innerHTML = `<div class="score">Du hast ${score} von ${quizQuestions.length} Fragen richtig beantwortet!</div>`;
   scoreDiv.textContent = '';
+}
+
+// Remove previous PageUp/PageDown logic and use ArrowUp/ArrowDown for category jump
+function categoryJumpListener(e) {
+  if (answered || countdownActive) return;
+  if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+    const currentCat = quizQuestions[currentQuestion].category;
+    const allCats = quizQuestions.map(q => q.category);
+    const uniqueCats = [...new Set(allCats)];
+    let catIdx = uniqueCats.indexOf(currentCat);
+    let targetCatIdx = e.code === 'ArrowDown' ? catIdx + 1 : catIdx - 1;
+    if (targetCatIdx < 0) targetCatIdx = uniqueCats.length - 1;
+    if (targetCatIdx >= uniqueCats.length) targetCatIdx = 0;
+    const targetCat = uniqueCats[targetCatIdx];
+    // Find first question in target category
+    const targetQIdx = quizQuestions.findIndex(q => q.category === targetCat);
+    if (targetQIdx !== -1) {
+      currentQuestion = targetQIdx;
+      showQuestion();
+    }
+  }
 }
 
 showQuestion();
