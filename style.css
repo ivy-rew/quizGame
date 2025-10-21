@@ -28,6 +28,23 @@ h2 {
 .category {
   text-align: center;
   margin-bottom: 8px;
+  position: relative;
+}
+.category-icon-corner {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 2em;
+  margin: 0.2em 0.4em 0 0;
+  pointer-events: none;
+}
+.category-icon {
+  vertical-align: middle;
+}
+.category-icon-header {
+  font-size: 1.5em;
+  margin-left: 0.5em;
+  vertical-align: middle;
 }
 #countdownBar {
   text-align: center;

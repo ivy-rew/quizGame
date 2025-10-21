@@ -13,13 +13,32 @@ let pausedSeconds = 0;
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
 
+function getCategoryIcon(category) {
+  switch (category.trim().toLowerCase()) {
+    case 'bibel':
+      return '<span class="category-icon" title="Bibel">📖</span>';
+    case 'licht':
+      return '<span class="category-icon" title="Licht">💡</span>';
+    case 'herbst':
+      return '<span class="category-icon" title="Herbst">🍂</span>';
+    case 'weltraum':
+      return '<span class="category-icon" title="Weltraum">🪐</span>';
+    default:
+      return '';
+  }
+}
+
 function showQuestion() {
   answered = false;
   countdownActive = false;
   scoreDiv.textContent = '';
   const q = quizQuestions[currentQuestion];
+  // Set header with emoji
+  const header = document.querySelector('.quiz-container h2');
+  if (header) {
+    header.innerHTML = `Eins, Zwei oder Drei? <span class='category-icon-header'>${getCategoryIcon(q.category)}</span>`;
+  }
   quizDiv.innerHTML = `
-    <div class="category"><strong>Kategorie:</strong> ${q.category}</div>
     <div class="question">${q.question}</div>
     <div class="answers cards">
       ${q.answers.map((a, i) => `
