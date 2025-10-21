@@ -13,9 +13,16 @@ function showQuestion() {
   quizDiv.innerHTML = `
     <div class="category"><strong>Kategorie:</strong> ${q.category}</div>
     <div class="question">${q.question}</div>
-    <ul class="answers">
-      ${q.answers.map((a, i) => `<li><button class="answer-btn" data-idx="${i}">${i+1}. ${a}</button></li>`).join('')}
-    </ul>
+    <div class="answers cards">
+      ${q.answers.map((a, i) => `
+        <div class="answer-card">
+          <button class="answer-btn" data-idx="${i}">
+            <div class="answer-number">${i+1}</div>
+            <div class="answer-text">${a}</div>
+          </button>
+        </div>
+      `).join('')}
+    </div>
     <button class="next-btn" id="nextBtn" disabled>Nächste Frage</button>
   `;
   document.querySelectorAll('.answer-btn').forEach(btn => {

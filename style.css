@@ -21,25 +21,35 @@ h2 {
   font-size: 1.2em;
   margin-bottom: 24px;
 }
-.answers {
-  list-style: none;
-  padding: 0;
+.answers.cards {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-bottom: 24px;
 }
-.answers li {
-  margin-bottom: 12px;
+.answer-card {
+  flex: 1 1 0;
+  display: flex;
+  align-items: stretch;
 }
 .answer-btn {
   width: 100%;
-  padding: 12px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 2px solid #ccc;
+  border-radius: 12px;
   background: #e9e9e9;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, border-color 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 .answer-btn:hover {
   background: #d4eaf7;
+  border-color: #2196f3;
 }
 .answer-btn.correct {
   background: #b6e7b0;
@@ -48,6 +58,16 @@ h2 {
 .answer-btn.incorrect {
   background: #f7b6b6;
   border-color: #f44336;
+}
+.answer-number {
+  font-size: 2.5em;
+  font-weight: bold;
+  color: #2196f3;
+  margin-bottom: 8px;
+}
+.answer-text {
+  font-size: 1em;
+  color: #333;
 }
 .next-btn {
   margin-top: 24px;
