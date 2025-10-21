@@ -1,6 +1,8 @@
 ## Eins, zwei oder der; letzte Chance ; vorbei!
 ### Fragen zum Lichterfest
 
+#### Bibel
+
 **Was bedeutet das Wort „Bibel“ übersetzt?**
 - 1. Alt
 - 2. Schrift
@@ -65,6 +67,9 @@
 - 1. sie stiegen auf den höchsten Berg der Welt
 - 2. sie retteten sich auf eine Insel.
 - 3. sie bauten eine Arche (Lösung)
+
+
+#### Licht
 
 **Jemand der eine plötzliche Idee hat, hat…?**
 - 1. einen Geistesblitz (Lösung)
@@ -141,6 +146,8 @@
 - 2. den Schlussschein
 - 3. das Endlicht
 
+#### Herbst
+
 **Was ist eine „Herbstzeitlose“?**
 - 1. eine Person, die den Herbst nicht mag
 - 2. eine Pflanzenart, die im Herbst blüht (Lösung)
@@ -185,6 +192,8 @@
 - 1. Schwalben (Lösung)
 - 2. Meisen
 - 3. Elstern
+
+#### Weltraum
 
 **Warum leuchtet der Mond?**
 - 1. weil er aus heißem Gas besteht

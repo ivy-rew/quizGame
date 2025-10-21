@@ -11,6 +11,7 @@ function showQuestion() {
   scoreDiv.textContent = '';
   const q = quizQuestions[currentQuestion];
   quizDiv.innerHTML = `
+    <div class="category"><strong>Kategorie:</strong> ${q.category}</div>
     <div class="question">${q.question}</div>
     <ul class="answers">
       ${q.answers.map((a, i) => `<li><button class="answer-btn" data-idx="${i}">${i+1}. ${a}</button></li>`).join('')}
