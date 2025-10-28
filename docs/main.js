@@ -14,8 +14,13 @@ const secondsWithoutHighlight = 3;
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
 // Audio for countdown
+let countdownAudioList = [
+  'countdown1.mp3',
+  'countdown2.mp3',
+  'countdown3.mp3'
+];
+let countdownAudioIndex = -1;
 let countdownAudio = null;
-let countdownAudioSrc = 'countdown.mp3'; // Example: royalty-free ticking sound
 // Audio for solution
 let solutionAudio = null;
 let solutionAudioSrc = 'yeah.mp3';
@@ -94,15 +99,28 @@ function spaceCountdownListener(e) {
   }
 }
 
+function audioNext() {
+  countdownAudioIndex++;
+  if (countdownAudioIndex >= countdownAudioList.length) {
+    countdownAudioIndex = 0;
+  }
+  countdownAudio = new Audio(countdownAudioList[countdownAudioIndex]);
+  countdownAudio.onerror = audioNext;
+  countdownAudio.onended = audioNext;
+  countdownAudio.play();
+}
+
+function initAudio() {
+  if (!countdownAudio) {
+    audioNext();
+  }
+}
+
 
 function runCountdown(highlightIdx, seconds) {
   let btns = Array.from(document.querySelectorAll('.answer-btn'));
   const countdownBar = document.getElementById('countdownBar');
-  // Start audio
-  if (!countdownAudio) {
-    countdownAudio = new Audio(countdownAudioSrc);
-    countdownAudio.loop = true;
-  }
+  initAudio();
   countdownAudio.play();
 
   countdownInterval = setInterval(() => {
@@ -122,6 +140,7 @@ function runCountdown(highlightIdx, seconds) {
     if (seconds <= 0) {
       clearInterval(countdownInterval);
       countdownBar.textContent = '';
+      // Stop and reset audio
       if (countdownAudio) {
         countdownAudio.pause();
       }
@@ -133,6 +152,7 @@ function runCountdown(highlightIdx, seconds) {
     showSolution();
     countdownBar.textContent = '';
     document.removeEventListener('keydown', spaceCountdownListener);
+    // Stop and reset audio
     if (countdownAudio) {
       countdownAudio.pause();
     }
