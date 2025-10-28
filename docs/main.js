@@ -10,6 +10,7 @@ let countdownSeconds = 10;
 let countdownPaused = false;
 let pausedSeconds = 0;
 
+const secondsWithoutHighlight = 3;
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
 
@@ -96,13 +97,17 @@ function startCountdownMode() {
   let btns = Array.from(document.querySelectorAll('.answer-btn'));
   let highlightIdx = -1;
   countdownInterval = setInterval(() => {
-    btns.forEach((btn, i) => btn.classList.remove('hovering'));
-    let nextIdx;
-    do {
-      nextIdx = Math.floor(Math.random() * btns.length);
-    } while (nextIdx === highlightIdx);
-    highlightIdx = nextIdx;
-    btns[highlightIdx].classList.add('hovering');
+    if (seconds <= secondsWithoutHighlight) {
+      btns.forEach((btn, i) => btn.classList.remove('hovering'));
+    } else {
+      btns.forEach((btn, i) => btn.classList.remove('hovering'));
+      let nextIdx;
+      do {
+        nextIdx = Math.floor(Math.random() * btns.length);
+      } while (nextIdx === highlightIdx);
+      highlightIdx = nextIdx;
+      btns[highlightIdx].classList.add('hovering');
+    }
     seconds--;
     countdownBar.textContent = `${seconds}`;
     if (seconds <= 0) {
@@ -139,13 +144,17 @@ function resumeCountdown() {
   let seconds = parseInt(document.getElementById('countdownBar').textContent.match(/\d+/));
   let highlightIdx = btns.findIndex(btn => btn.classList.contains('hovering'));
   countdownInterval = setInterval(() => {
-    btns.forEach((btn, i) => btn.classList.remove('hovering'));
-    let nextIdx;
-    do {
-      nextIdx = Math.floor(Math.random() * btns.length);
-    } while (nextIdx === highlightIdx);
-    highlightIdx = nextIdx;
-    btns[highlightIdx].classList.add('hovering');
+    if (seconds <= secondsWithoutHighlight) {
+      btns.forEach((btn, i) => btn.classList.remove('hovering'));
+    } else {
+      btns.forEach((btn, i) => btn.classList.remove('hovering'));
+      let nextIdx;
+      do {
+        nextIdx = Math.floor(Math.random() * btns.length);
+      } while (nextIdx === highlightIdx);
+      highlightIdx = nextIdx;
+      btns[highlightIdx].classList.add('hovering');
+    }
     seconds--;
     document.getElementById('countdownBar').textContent = `${seconds}`;
     if (seconds <= 0) {
