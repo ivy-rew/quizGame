@@ -13,6 +13,8 @@ let pausedSeconds = 0;
 const secondsWithoutHighlight = 3;
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
+let countdownAudio = null;
+let countdownAudioSrc = 'countdown.mp3';
 
 function getCategoryIcon(category) {
   switch (category.trim().toLowerCase()) {
@@ -92,6 +94,13 @@ function spaceCountdownListener(e) {
 function runCountdown(highlightIdx, seconds) {
   let btns = Array.from(document.querySelectorAll('.answer-btn'));
   const countdownBar = document.getElementById('countdownBar');
+  // Start audio
+  if (!countdownAudio) {
+    countdownAudio = new Audio(countdownAudioSrc);
+    countdownAudio.loop = true;
+  }
+  countdownAudio.play();
+
   countdownInterval = setInterval(() => {
     if (seconds <= secondsWithoutHighlight) {
       btns.forEach((btn, i) => btn.classList.remove('hovering'));
@@ -109,6 +118,9 @@ function runCountdown(highlightIdx, seconds) {
     if (seconds <= 0) {
       clearInterval(countdownInterval);
       countdownBar.textContent = '';
+      if (countdownAudio) {
+        countdownAudio.pause();
+      }
     }
   }, 1000);
   countdownTimeout = setTimeout(() => {
@@ -117,6 +129,9 @@ function runCountdown(highlightIdx, seconds) {
     showSolution();
     countdownBar.textContent = '';
     document.removeEventListener('keydown', spaceCountdownListener);
+    if (countdownAudio) {
+      countdownAudio.pause();
+    }
   }, seconds * 1000);
 }
 
@@ -137,6 +152,7 @@ function toggleCountdownPause() {
     clearInterval(countdownInterval);
     clearTimeout(countdownTimeout);
     countdownBar.textContent += ' (Pause)';
+    if (countdownAudio) countdownAudio.pause();
   } else {
     countdownPaused = false;
     // Remove any label after pause
@@ -168,6 +184,7 @@ function showSolution() {
   // Show correct answer just below countdown, hide countdown
   const countdownBar = document.getElementById('countdownBar');
   countdownBar.textContent = '';
+  if (countdownAudio) countdownAudio.pause();
   // Insert correct answer below countdownBar
   if (!document.getElementById('correctAnswerBar')) {
     const answerDiv = document.createElement('div');
