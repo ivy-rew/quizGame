@@ -13,8 +13,12 @@ let pausedSeconds = 0;
 const secondsWithoutHighlight = 3;
 const quizDiv = document.getElementById('quiz');
 const scoreDiv = document.getElementById('score');
+// Audio for countdown
 let countdownAudio = null;
-let countdownAudioSrc = 'countdown.mp3';
+let countdownAudioSrc = 'countdown.mp3'; // Example: royalty-free ticking sound
+// Audio for solution
+let solutionAudio = null;
+let solutionAudioSrc = 'yeah.mp3';
 
 function getCategoryIcon(category) {
   switch (category.trim().toLowerCase()) {
@@ -184,7 +188,14 @@ function showSolution() {
   // Show correct answer just below countdown, hide countdown
   const countdownBar = document.getElementById('countdownBar');
   countdownBar.textContent = '';
+  // Pause countdown audio
   if (countdownAudio) countdownAudio.pause();
+  // Play solution audio
+  if (!solutionAudio) {
+    solutionAudio = new Audio(solutionAudioSrc);
+  }
+  solutionAudio.currentTime = 0;
+  solutionAudio.play();
   // Insert correct answer below countdownBar
   if (!document.getElementById('correctAnswerBar')) {
     const answerDiv = document.createElement('div');
